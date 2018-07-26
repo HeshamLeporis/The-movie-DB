@@ -67,7 +67,6 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
             new Expanded(
                 child: new Container(
                   decoration: new BoxDecoration(color: Colors.white70),
-                  height: 200.0,
                   child: new MovieTable(this.movies).createMovieTable(),
                 )
             )
