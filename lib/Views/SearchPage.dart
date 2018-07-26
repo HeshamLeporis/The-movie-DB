@@ -23,28 +23,33 @@ class SearchPage extends StatefulWidget{
 
 class _MyHomePageState extends State<SearchPage> implements MovieContractView{
   int _counter = 0;
+  final textFieldController = TextEditingController();
   List<Movie> movies;
+  int currentPage=0;
+  int totalPages=-1;
   MoviePresenter moviePresenter;
   _MyHomePageState(){
     moviePresenter = new MoviePresenter();
   }
 
   @override
+  void dispose() {
+    // Clean up the controller when the Widget is disposed
+    textFieldController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     moviePresenter.attachView(this);
-    moviePresenter.searchMovie("batman", "1");
   }
   
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
+
     return new Scaffold(
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -58,6 +63,16 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(color: Colors.white30),
                 child: TextField(
+                  controller: textFieldController,
+                  onSubmitted: (keyword) {
+                    bool isKeyWordToSearch = keyword.length != 0;
+                    bool isSearchResultsRetrieved = totalPages != -1;
+                    bool isMoreResultsExists = isSearchResultsRetrieved && currentPage<totalPages;
+                    if(isKeyWordToSearch && (!isSearchResultsRetrieved || isMoreResultsExists) ) {
+                      currentPage = currentPage + 1;
+                      moviePresenter.searchMovie(keyword,currentPage.toString());
+                    }
+                  },
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Please enter a search term'
@@ -87,4 +102,14 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
   void setErrorMovies(){
     // todo display error message
   }
+
+  void setCurrentPage(int currentPage){
+    this.currentPage = currentPage;
+  }
+
+  void setTotalPages(int totalPages){
+    this.totalPages = totalPages;
+
+  }
+
 }
