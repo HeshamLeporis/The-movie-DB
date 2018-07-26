@@ -32,6 +32,7 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
   @override
   void initState() {
     super.initState();
+    moviePresenter.attachView(this);
     moviePresenter.searchMovie("batman", "1");
   }
   
@@ -51,26 +52,35 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
         title: new Text(widget.title),
       ),
       body: new Column(
-        children: <Widget>[
-          new Container(
-              height: 56.0,
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              decoration: BoxDecoration(color: Colors.white30),
-              child: TextField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Please enter a search term'
-                ),
-              )
-          ),
-          new MovieTable(this.movies).createMovieTable()
-        ],
+          children: <Widget>[
+            new Container(
+                height: 56.0,
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                decoration: BoxDecoration(color: Colors.white30),
+                child: TextField(
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Please enter a search term'
+                  ),
+                )
+            ),
+            new Expanded(
+                child: new Container(
+                  decoration: new BoxDecoration(color: Colors.white70),
+                  height: 200.0,
+                  child: new MovieTable(this.movies).createMovieTable(),
+                )
+            )
+          ]
+      )
 
-      ),
     );
   }
   void setMovies(List<Movie> movies){
-    this.movies = movies;
+    this.setState((){
+      this.movies = movies;
+    });
+
   }
   void setEmptyMovies(){
     movies = new List();

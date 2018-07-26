@@ -6,10 +6,10 @@ class MovieTable extends ListView{
     this.movies = movies;
   }
   ListView createMovieTable(){
-    new ListView.builder(itemCount: movies.length,
+    return new ListView.builder(itemCount: movies == null ? 0 : movies.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('${movies[index].title}'),
+          return new Card(
+            child: new Text(movies[index].title),
           );
         });
 

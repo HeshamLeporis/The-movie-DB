@@ -11,11 +11,10 @@ class MovieServices{
     final url = new Uri.http(Strings.BASE_URL, Strings.SEARCH_URL,
         {"api_key": Strings.API_KEY, "query": keyword, "page": page});
     return http
-        .get(url)
+        .get(Uri.encodeFull(url.toString()))
         .then((http.Response response) {
       final String jsonBody = response.body;
       final statusCode = response.statusCode;
-
       if (statusCode < 200 || statusCode >= 300 || jsonBody == null) {
         throw new FetchDataException(
             "Error while getting contacts [StatusCode:$statusCode, Error:${response

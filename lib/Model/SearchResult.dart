@@ -11,7 +11,7 @@ class SearchResult{
 
   SearchResult.fromMap(Map<String, dynamic>  map) :
         currentPage = map['page'],
-        totalPages = map['total_pages'],
-        movies = List(map['results']).map((movieRaw) => new Movie.fromMap(movieRaw))
-            .toList();
+        movies = (map['results'] as List).map((movie) => Movie.fromMap(movie)).toList(),
+        totalPages = map['total_pages'];
+
 }
