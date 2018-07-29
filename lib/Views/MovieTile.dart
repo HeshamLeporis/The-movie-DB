@@ -7,14 +7,18 @@ class MovieTile{
     this.movie = movie;
   }
   ListTile createMovieTile(){
+    var movieImage = movie.posterURL != null ?  Image.network(
+      Strings.POSTER_HOST_URL + movie.posterURL,
+      fit: BoxFit.fill,
+    ) : Image.asset("assets/Alternate_image.png",
+      fit: BoxFit.fill,
+    );
+
     return new ListTile(
         leading: new Container(
             height: 150.0,
             width: 100.0,
-            child: Image.network(
-              Strings.POSTER_HOST_URL + movie.posterURL,
-              fit: BoxFit.fill,
-            )
+            child: movieImage
         ),
         title: new Column(
           crossAxisAlignment: CrossAxisAlignment.start,

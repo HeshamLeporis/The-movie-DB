@@ -18,19 +18,19 @@ class SearchPage extends StatefulWidget{
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  MyHomePageState createState() => new MyHomePageState();
 }
 
-class _MyHomePageState extends State<SearchPage> implements MovieContractView{
+class MyHomePageState extends State<SearchPage> implements MovieContractView{
   int _counter = 0;
   final textFieldController = TextEditingController();
   List<Movie> movies;
-  int currentPage=0;
-  int totalPages=-1;
+  int _currentPage=0;
+  int _totalPages=-1;
   MoviePresenter moviePresenter;
-  _MyHomePageState(){
-    moviePresenter = new MoviePresenter();
-  }
+  ScrollController _scrollController;
+  String keyword="";
+  MyHomePageState();
 
   @override
   void dispose() {
@@ -42,7 +42,10 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
   @override
   void initState() {
     super.initState();
+    moviePresenter = new MoviePresenter();
+    this.movies = new List();
     moviePresenter.attachView(this);
+    _scrollController = new ScrollController()..addListener(_scrollListener);
   }
   
 
@@ -65,13 +68,8 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
                 child: TextField(
                   controller: textFieldController,
                   onSubmitted: (keyword) {
-                    bool isKeyWordToSearch = keyword.length != 0;
-                    bool isSearchResultsRetrieved = totalPages != -1;
-                    bool isMoreResultsExists = isSearchResultsRetrieved && currentPage<totalPages;
-                    if(isKeyWordToSearch && (!isSearchResultsRetrieved || isMoreResultsExists) ) {
-                      currentPage = currentPage + 1;
-                      moviePresenter.searchMovie(keyword,currentPage.toString());
-                    }
+                    this.keyword = keyword;
+                    searchMovies(this.keyword);
                   },
                   decoration: InputDecoration(
                       border: InputBorder.none,
@@ -82,7 +80,7 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
             new Expanded(
                 child: new Container(
                   decoration: new BoxDecoration(color: Colors.white70),
-                  child: new MovieTable(this.movies).createMovieTable(),
+                  child: new MovieTable(this.movies).createMovieTable(_scrollController),
                 )
             )
           ]
@@ -90,9 +88,27 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
 
     );
   }
+
+  void searchMovies(String keyword){
+    bool isKeyWordToSearch = keyword.length != 0;
+    bool isSearchResultsRetrieved = _totalPages != -1;
+    bool isMoreResultsExists = isSearchResultsRetrieved && _currentPage<_totalPages;
+    if(isKeyWordToSearch && (!isSearchResultsRetrieved || isMoreResultsExists) ) {
+      _currentPage = _currentPage + 1;
+      moviePresenter.searchMovie(keyword,_currentPage.toString());
+    }
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      searchMovies(this.keyword);
+    }
+
+  }
+
   void setMovies(List<Movie> movies){
     this.setState((){
-      this.movies = movies;
+      this.movies.addAll(movies);
     });
 
   }
@@ -104,11 +120,11 @@ class _MyHomePageState extends State<SearchPage> implements MovieContractView{
   }
 
   void setCurrentPage(int currentPage){
-    this.currentPage = currentPage;
+    this._currentPage = currentPage;
   }
 
   void setTotalPages(int totalPages){
-    this.totalPages = totalPages;
+    this._totalPages = totalPages;
 
   }
 
