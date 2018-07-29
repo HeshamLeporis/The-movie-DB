@@ -20,7 +20,7 @@ class MovieTable extends MyHomePageState{
           return new Container(
             decoration:
                 new BoxDecoration(border: new Border(bottom: new BorderSide())),
-            child: new MovieTile(movies[index]).createMovieTile()
+            child: new MovieTile(movies[index]).createMovieTile(context)
 
           );
         });

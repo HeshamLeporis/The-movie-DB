@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/Model/Movie.dart';
 import 'package:the_movie_db/Utils/Strings.dart';
+import 'package:the_movie_db/Views/MovieDetailsPage.dart';
 class MovieTile{
   Movie movie;
   MovieTile(Movie movie){
     this.movie = movie;
   }
-  ListTile createMovieTile(){
+  ListTile createMovieTile(BuildContext context){
     var movieImage = movie.posterURL != null ?  Image.network(
       Strings.POSTER_HOST_URL + movie.posterURL,
       fit: BoxFit.fill,
@@ -46,7 +47,12 @@ class MovieTile{
             fontSize: 18.0,
             color: Colors.grey,
           ),
-        )
+        ),
+      onTap: (){
+          Navigator.push(context, 
+          MaterialPageRoute(builder: (context) => MovieDetailsPage(movie: movie)
+          ));
+      },
     );
   }
 }
